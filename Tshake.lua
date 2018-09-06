@@ -3832,6 +3832,152 @@ redis:sadd('tshake:'..bot_id..'dev', apmd[2])
 tsX000(apmd[2],msg,'☑┇تم رفعه مطور')
 end
 
+local keyboard = {
+ {"ضع اسم للبوت ©","ضع صوره للترحيب 🌄"},
+ {"تعطيل التواصل ✖️","تفعيل التواصل 🔛"},
+ {"المطورين 🕹","ايدي 🆔","الاحصائيات 📈"},
+ {"اضف رد عام ➕","الردود العامه 🗨"},
+ {"الملفات 🗂","اذاعه عام بالتوجيه 📣"},
+ {"اذاعه 🗣","اذاعه عام 📢","اذاعه خاص 👤"},
+ {"تحديث ♻️","قائمه العام 📜","قناة السورس 📡"},
+ {"تحديث السورس ™"},
+ {"الغاء الامر ✖️"}}
+return send_inline_key(msg.from.id,text,keyboard)
+else
+
+if r == BOT_NAME and r2 == 'غادر' and is_sudo(msg) then
+sendMsg(msg.to.id,msg.id_,'اوك باي 😢💔💯','html')
+botrem(msg)
+end   
+if (r == "ضع اسم للبوت" or r== 'ضع اسم للبوت ©') and is_sudo(msg) then
+if not we_sudo(msg) then return "☔️هذا الاوامر للمطور الاساسي فقط 🌑" end
+redis:setex(boss..'namebot:witting'..msg.from.id,300,true)
+return"📭¦ حسننا عزيزي  ✋🏿\n🗯¦ الان ارسل الاسم  للبوت 🍃"
+end
+-------[/start and welcom and save user id ]-----------
+if r=="/start" and msg.to.type == 'pv'  then
+if we_sudo(msg) then
+local text = '🎖¦ آهہ‏‏لآ عزيزي آلمـطـور 🍃\n💰¦ آنتهہ‏‏ آلمـطـور آلآسـآسـي هہ‏‏نآ 🛠\n...\n\n🚸¦ تسـتطـيع‏‏ آلتحگم بگل آلآوآمـر آلمـمـوجودهہ‏‏ بآلگيبورد\n⚖️¦ فقط آضـغط ع آلآمـر آلذي تريد تنفيذهہ‏‏'
+
+ redis:sadd(boss..'users',msg.from.id)
+local text = [[💯¦ مـرحبآ آنآ بوت آسـمـي ]]..BOT_NAME..[[ 🎖
+💰¦ آختصـآصـي حمـآيهہ‏‏ آلمـجمـوعآت
+📛¦ مـن آلسـبآم وآلتوجيهہ‏‏ وآلتگرآر وآلخ...
+🚸¦ فقط آلمـطـور يسـتطـيع تفعيل آلبوت
+⚖️¦ مـعرف آلمـطـور  : ]]..SUDO_USER..[[
+
+👨🏽‍🔧]]
+      
+xsudouser = SUDO_USER:gsub('@','')
+xsudouser = xsudouser:gsub([[\_]],'_')
+local inline = {{{text="آلمـطـور ™",url="t.me/"..xsudouser}}}
+return send_inline_key(msg.from.id,text,nil,inline)
+end end
+if (msg.to.type == "pv") and is_sudo(msg) then -- ارسال الرساله بالخاص عبر رد على التوجيه
+if msg.reply_id then
+function get_msg_id(arg, data)
+function replay_fwd(arg,data)
+if data.forward_info_ then
+function infousers(arg,data)
+if data.username_ then user_name = '@'..data.username_ else user_name = data.first_name_ end
+sendMsg(arg.user_id,0,'['..r..']','md')
+sendMsg(msg.from.id,msg.id_,"📬¦ تم آرسـآل آلرسـآل‏‏هہ 🌿\n🎟¦ آلى : "..user_name.." 🏌🏻",'html') end
+tdcli_function({ID ='GetUser',user_id_ = data.forward_info_.sender_user_id_}, infousers, {user_id=data.forward_info_.sender_user_id_})  end end
+tdcli_function({ID ='GetMessage',chat_id_=msg.chat_id_,message_id_=data.id_},replay_fwd,nil) end
+tdcli_function({ID ='GetMessage',chat_id_=msg.chat_id_,message_id_=msg.reply_to_message_id_},get_msg_id,nil)
+end end
+if (msg.to.type == "pv") and not we_sudo(msg) and not redis:get(boss..'lock_twasel') and msg.from.id ~= our_id then -- ارسال رساله للاعضاء الي يدخلون خاص
+sendMsg(msg.to.id,0,"🗯¦ تم آرسـآل رسـآلتگ آلى آلمـطـور\n📬¦ سـآرد عليگ في آقرب وقت\n🏌 "..SUDO_USER,'md')
+forwardMessages(SUDO_ID,msg.to.id,{[0] = msg.id_},0)
+end
+if (r=="تيست" or r=="test") and is_sudo(msg) then return "💯 البوت شـغــال 🚀" end
+if (r== "ايدي" or r=="ايدي 🆔") and msg.to.type == "pv" then return  "\n"..msg.from.id.."\n"  end
+if r== "قناة السورس 📡" and msg.to.type == "pv" then
+local inline = {{{text="قنآهہ‏‏ آلسـورس : الـزعـيـم 🍃",url="t.me/lldev1ll"}}}
+return send_inline_key(msg.from.id,'  [قناة السورس : الـزعـيـم](t.me/lldev1ll)',nil,inline)
+end
+if (r== "الاحصائيات 📈" or r=="الاحصائيات") and is_sudo(msg) then
+local group = redis:smembers(boss..'group:ids')
+local pv = redis:smembers(boss..'users')
+return 'الاحصائيات : 📈 \n\n👥*¦* عدد المجموعات المفعله : '..#group..'\n👤*¦* عدد المشتركين في البوت : '..#pv..'\n📡'
+end
+---------------[End Function data] -----------------------
+if r=="اضف رد عام" or r=="اضف رد عام ➕" then
+if not we_sudo(msg) then return "☔️هذا الاوامر للمطور الاساسي فقط 🌑" end
+redis:setex(boss..'addrd_all:'..msg.to.id..msg.from.id,300 , true)
+redis:del(boss..'allreplay:'..msg.to.id..msg.from.id)
+return "📭¦ حسننا الان ارسل كلمة الرد العام 🍃\n"
+end
+------------------------------------------------------
+if msg.text and not msg.text~='الغاء الامر ✖️' and not msg.text~='الغاء الامر'  and not msg.text~='الغاء' then
+if redis:get(boss..'namebot:witting'..msg.from.id) then --- استقبال اسم البوت 
+redis:del(boss..'namebot:witting'..msg.from.id)
+redis:set(boss..'bot:name',msg.text)
+reload_plugins() 
+return "📭¦ تم تغير اسم البوت  ✋🏿\n🗯¦ الان اسمه `"..msg.text.."` \n✓"
+end
+if redis:get(boss..'addrd_all:'..msg.to.id..msg.from.id) then -- استقبال الرد لكل المجموعات
+if not redis:get(boss..'allreplay:'..msg.to.id..msg.from.id) then-- استقبال كلمه الرد لكل المجموعات
+redis:hdel(boss..'replay_photo:group:',msg.text)
+redis:hdel(boss..'replay_voice:group:',msg.text)
+redis:hdel(boss..'replay_animation:group:',msg.text)
+redis:hdel(boss..'replay_audio:group:',msg.text)
+redis:hdel(boss..'replay_sticker:group:',msg.text)
+redis:hdel(boss..'replay_video:group:',msg.text)
+redis:setex(boss..'allreplay:'..msg.to.id..msg.from.id,300,msg.text)
+return "📜¦ جيد , يمكنك الان ارسال جوا ب الردالعام \n🔛¦ [[ نص,صوره,فيديو,متحركه,بصمه,اغنيه ]] ✓\n-" 
+end
+if redis:get(boss..'allreplay:'..msg.to.id..msg.from.id) then -- استقبال جواب الرد لكل المجموعات
+redis:hset(boss..'replay:all', redis:get(boss.."allreplay:"..msg.to.id..msg.from.id),msg.text)
+redis:del(boss..'addrd_all:'..msg.to.id..msg.from.id)
+return '(['..redis:get(boss..'allreplay:'..msg.to.id..msg.from.id)..'])\n  ✓ تم اضافت الرد لكل المجموعات 🚀 '
+end end
+     
+if r== 'مسح الردود العامه' then
+if not is_sudo(msg) then return"♨️ للمطورين فقط ! 💯" end
+local names = redis:hkeys(boss..'replay:all')
+local photo =redis:hkeys(boss..'replay_photo:group:')
+local voice = redis:hkeys(boss..'replay_voice:group:')
+local animation = redis:hkeys(boss..'replay_animation:group:')
+local audio = redis:hkeys(boss..'replay_audio:group:')
+local sticker = redis:hkeys(boss..'replay_sticker:group:')
+local video = redis:hkeys(boss..'replay_video:group:')
+for i=1, #names do redis:hdel(boss..'replay:all',names[i]) end
+for i=1, #photo do redis:hdel(boss..'replay_photo:group:',photo[i]) end
+for i=1, #voice do redis:hdel(boss..'replay_voice:group:',voice[i]) end
+for i=1, #animation do redis:hdel(boss..'replay_animation:group:',animation[i]) end
+for i=1, #audio do redis:hdel(boss..'replay_audio:group:',audio[i]) end
+for i=1, #sticker do redis:hdel(boss..'replay_sticker:group:',sticker[i]) end
+for i=1, #video do redis:hdel(boss..'replay_video:group:',video[i]) end
+return "✓ تم مسح كل الردود العامه🚀"
+end
+if r== 'مسح رد عام' then
+if not is_sudo(msg) then return"♨️ للمطورين فقط ! 💯" end
+redis:set(boss..'delrdall:'..msg.from.id,true) return "📭¦ حسننا عزيزي  ✋🏿\n🗯¦ الان ارسل الرد لمسحها من  المجموعات 🍃"
+end
+     
+if (r== 'الردود العامه' or r=='الردود العامه 🗨') and is_sudo(msg) then
+local names = redis:hkeys(boss..'replay:all')
+local photo =redis:hkeys(boss..'replay_photo:group:')
+local voice = redis:hkeys(boss..'replay_voice:group:')
+local animation = redis:hkeys(boss..'replay_animation:group:')
+local audio = redis:hkeys(boss..'replay_audio:group:')
+local sticker = redis:hkeys(boss..'replay_sticker:group:')
+local video = redis:hkeys(boss..'replay_video:group:')
+if #names==0 and #photo==0 and #voice==0 and #animation==0 and #audio==0 and #sticker==0 and #video==0 then return '🚸*¦* لا يوجد ردود مضافه حاليا \n❕' end
+local ii = 1
+local message = '💬*¦* الردود العامه في البوت :   :\n\n'
+for i=1, #photo do message = message ..ii..' - *{* '..photo[i]..' *}_*( صوره 🏞 ) \n' ii = ii + 1 end
+for i=1, #names do message = message ..ii..' - *{* '..names[i]..' *}_*( نص 🗯 ) \n' ii = ii + 1 end
+for i=1, #voice do message = message ..ii..' - *{* '..voice[i]..' *}_*( بصمه 🎙 ) \n' ii = ii + 1 end
+for i=1, #animation do message = message ..ii..' - *{* '..animation[i]..' *}_*( متحركه 🎭 ) \n' ii = ii + 1 end
+for i=1, #audio do message = message ..ii..' - *{* '..audio[i]..' *}_*( صوتيه 🔊 ) \n' ii = ii + 1 end
+for i=1, #sticker do message = message ..ii..' - *{* '..sticker[i]..' *}_*( ملصق 🗺 ) \n' ii = ii + 1 end
+for i=1, #video do message = message ..ii..' - *{* '..video[i]..' *}_*( فيديو  🎞 ) \n' ii = ii + 1 end
+return message..'\n➖➖➖'
+end
+     
+
 if text:match("^حذف مطور$") and tonumber(msg.sender_user_id_) == tonumber(sudo_add) and msg.reply_to_message_id_ then
 function demote_by_reply(extra, result, success)
 if not redis:sismember('tshake:'..bot_id..'dev', result.sender_user_id_) then
